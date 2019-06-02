@@ -51,9 +51,10 @@ export default class App extends React.Component {
           visible={this.state.displayDialog}
           onTouchOutside={() => this.clearDialog()}
           dialogTitle={<DialogTitle title={this.state.dialogTitle}/>}
+          dialogStyle={styles.dialog}
         >
           {/* TODO: use flexDirection: row; for buttons */}
-          <DialogContent>
+          <DialogContent style={styles.buttonsContainer}>
             <DialogButton
               text="Win"
               onPress={() => console.log('Pressed WIN')}
@@ -78,9 +79,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   dialog: {
-    flex: 1,
-    flexDirection: 'row',
+    flex: 0.25,
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    width: 200,
   },
+  buttonsContainer: {
+    flex: 0.5,
+    flexDirection: 'row',
+  }
 });
