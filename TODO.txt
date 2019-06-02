@@ -1,0 +1,15 @@
+- use FlatList for trackers list
+- add button to create to tracker
+- add button to delete tracker
+- use react navigation
+- save win or loss
+- use AsyncStorage
+- add stats at higher levels, e.g. if daily tracker:
+    - add success percentage for the week (from the day it started)
+    - add success percentage for the month (from the day it started)
+    - add success percentage for the year (from the day it started)
+    - display those stats below calendar
+- parameter to fill automatically days with either win or loss, does nothing by default
+- add weekly tracker
+- add monthly tracker
+- 
