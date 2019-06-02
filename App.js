@@ -1,7 +1,8 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {View} from 'react-native';
 import {Calendar} from 'react-native-calendars'
 import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog'
+import styles from './src/styles'
 
 export default class App extends React.Component {
   constructor(props) {
@@ -70,23 +71,3 @@ export default class App extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dialog: {
-    flex: 0.25,
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 200,
-  },
-  buttonsContainer: {
-    flex: 0.5,
-    flexDirection: 'row',
-  }
-});
