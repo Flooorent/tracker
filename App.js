@@ -1,8 +1,11 @@
 import React from 'react';
-import {View} from 'react-native';
+import {Button, Text, View} from 'react-native';
 import {Calendar} from 'react-native-calendars'
 import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog'
 import styles from './src/styles'
+
+const TRACKER = 'tracker'
+const ALL_TRACKERS = 'allTrackers'
 
 export default class App extends React.Component {
   constructor(props) {
@@ -16,6 +19,7 @@ export default class App extends React.Component {
       },
       displayDialog: false,
       dialogTitle: '',
+      currentScreen: ALL_TRACKERS
     }
   }
 
@@ -32,13 +36,46 @@ export default class App extends React.Component {
       dialogTitle: ''
     })
   }
+  
+  renderAllTrackersScreen() {
+    return (
+      <View style={styles.container}>
+        <Text>Florent</Text>
+        <Button
+          title='First Tracker'
+          onPress={() => this.navigateToTrackerScreen()}
+        />
+        <Button
+          title='Second Tracker'
+          onPress={() => this.navigateToTrackerScreen()}
+        />
+      </View>
+    )
+  }
 
-  render() {
+  navigateToTrackerScreen() {
+    this.setState({
+      currentScreen: TRACKER
+    })
+  }
+
+  navigateToAllTrackersScreen() {
+    this.setState({
+      currentScreen: ALL_TRACKERS
+    })
+  }
+
+  renderTrackerScreen() {
     const today = new Date()
     const minDate = '1998-17-12'
 
     return (
       <View style={styles.container}>
+
+        <Button
+          title='Back to all trackers'
+          onPress={() => this.navigateToAllTrackersScreen()}
+        />
 
         <Calendar
           maxDate={today}
@@ -54,7 +91,6 @@ export default class App extends React.Component {
           dialogTitle={<DialogTitle title={this.state.dialogTitle}/>}
           dialogStyle={styles.dialog}
         >
-          {/* TODO: use flexDirection: row; for buttons */}
           <DialogContent style={styles.buttonsContainer}>
             <DialogButton
               text="Win"
@@ -67,6 +103,17 @@ export default class App extends React.Component {
           </DialogContent>
         </Dialog>
 
+      </View>
+    )
+  }
+
+  render() {
+    const currentScreen = this.state.currentScreen
+
+    return (
+      <View style={styles.container}>
+        { currentScreen === TRACKER && this.renderTrackerScreen() }
+        { currentScreen === ALL_TRACKERS && this.renderAllTrackersScreen() }
       </View>
     );
   }
