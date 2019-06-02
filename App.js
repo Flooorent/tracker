@@ -8,13 +8,12 @@ export default class App extends React.Component {
     super(props)
     this.state = {
       markedDates: {
-        '2019-06-01': {selected: true, selectedColor: 'blue'},
-        '2019-06-02': {selected: true, selectedColor: 'blue'},
-        '2019-06-03': {selected: true, selectedColor: 'blue'},
-        '2019-06-04': {selected: true, selectedColor: 'red'},
-        '2019-06-05': {selected: true, selectedColor: 'blue'},
+        '2019-05-29': {selected: true, selectedColor: 'blue'},
+        '2019-05-30': {selected: true, selectedColor: 'blue'},
+        '2019-05-31': {selected: true, selectedColor: 'blue'},
+        '2019-06-01': {selected: true, selectedColor: 'red'},
       },
-      displayDialog: true,
+      displayDialog: false,
       dialogTitle: '',
     }
   }
@@ -22,7 +21,7 @@ export default class App extends React.Component {
   showDialog(day) {
     this.setState({
       displayDialog: true,
-      dialogTitle: day.day,
+      dialogTitle: day.dateString,
     })
   }
 
