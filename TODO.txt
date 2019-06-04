@@ -1,4 +1,3 @@
-- add button to create tracker
 - add button to delete tracker
 - use react navigation
 - save win or loss
@@ -11,4 +10,9 @@
 - parameter to fill automatically days with either win or loss, does nothing by default
 - add weekly tracker
 - add monthly tracker
-- 
+- new tracker dialog
+    - style center
+    - show error message when creating a new tracker with a name that's already exists
+    - when touch outside, keep new tracker name in memory in case it was a misclick
+    - new tracker's name must not be empty
+

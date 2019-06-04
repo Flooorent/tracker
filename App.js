@@ -3,6 +3,7 @@ import {Button, FlatList, Text, View} from 'react-native';
 import {Calendar} from 'react-native-calendars'
 import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog'
 import styles from './src/styles'
+import { TextInput } from 'react-native-gesture-handler';
 
 const TRACKER = 'tracker'
 const ALL_TRACKERS = 'allTrackers'
@@ -19,7 +20,13 @@ export default class App extends React.Component {
       },
       displayDialog: false,
       dialogTitle: '',
-      currentScreen: ALL_TRACKERS
+      currentScreen: ALL_TRACKERS,
+      trackers: [
+        {title: 'First Tracker'},
+        {title: 'Second Tracker'},
+      ],
+      displayNewTrackerDialog: false,
+      newTracker: '',
     }
   }
 
@@ -38,27 +45,65 @@ export default class App extends React.Component {
   }
   
   renderAllTrackersScreen() {
-    const trackers = [
-      {title: 'First Tracker', id: '1'},
-      {title: 'Second Tracker', id: '2'},
-    ]
-
     return (
       <View style={styles.container}>
         {/* TODO: improve this header */}
         <View style={[styles.container, styles.trackersHeader]}>
-            <Text>Florent</Text>
-          </View>
+          <Text>Florent</Text>
+        </View>
+
+        <Button
+          title="Add new tracker"
+          onPress={() => this.showNewTrackerDialog()}
+        />
         
         <FlatList
-          data={trackers}
+          data={this.state.trackers}
           renderItem={
-            ({item}) => <Button id={item.id} title={item.title} onPress={() => this.navigateToTrackerScreen()}/>
+            ({item}) => <Button id={item.title} title={item.title} onPress={() => this.navigateToTrackerScreen()}/>
           }
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.title}
         />
+
+      <Dialog
+        visible={this.state.displayNewTrackerDialog}
+        onTouchOutside={() => this.clearNewTrackerDialog()}
+        dialogTitle={<DialogTitle title="New tracker's name"/>}
+      >
+        <DialogContent>
+          <TextInput
+            placeholder="The name here"
+            onChangeText={(text) => this.setState({newTracker: text})}
+          />
+          <DialogButton
+            text="Create"
+            onPress={() => this.addNewTracker(this.state.newTracker)}/>
+        </DialogContent>
+      </Dialog>
+
       </View>
     )
+  }
+
+  showNewTrackerDialog() {
+    this.setState({
+      displayNewTrackerDialog: true,
+    })
+  }
+
+  clearNewTrackerDialog() {
+    this.setState({
+      displayNewTrackerDialog: false,
+      newTracker: '',
+    })
+  }
+
+  addNewTracker(title) {
+    this.setState({
+      trackers: [{title}, ...this.state.trackers],
+      displayNewTrackerDialog: false,
+      newTracker: '',
+    })
   }
 
   navigateToTrackerScreen() {
