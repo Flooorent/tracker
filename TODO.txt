@@ -1,5 +1,4 @@
-- use FlatList for trackers list
-- add button to create to tracker
+- add button to create tracker
 - add button to delete tracker
 - use react navigation
 - save win or loss

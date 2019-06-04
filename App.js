@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Text, View} from 'react-native';
+import {Button, FlatList, Text, View} from 'react-native';
 import {Calendar} from 'react-native-calendars'
 import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog'
 import styles from './src/styles'
@@ -38,16 +38,24 @@ export default class App extends React.Component {
   }
   
   renderAllTrackersScreen() {
+    const trackers = [
+      {title: 'First Tracker', id: '1'},
+      {title: 'Second Tracker', id: '2'},
+    ]
+
     return (
       <View style={styles.container}>
-        <Text>Florent</Text>
-        <Button
-          title='First Tracker'
-          onPress={() => this.navigateToTrackerScreen()}
-        />
-        <Button
-          title='Second Tracker'
-          onPress={() => this.navigateToTrackerScreen()}
+        {/* TODO: improve this header */}
+        <View style={[styles.container, styles.trackersHeader]}>
+            <Text>Florent</Text>
+          </View>
+        
+        <FlatList
+          data={trackers}
+          renderItem={
+            ({item}) => <Button id={item.id} title={item.title} onPress={() => this.navigateToTrackerScreen()}/>
+          }
+          keyExtractor={(item) => item.id}
         />
       </View>
     )
