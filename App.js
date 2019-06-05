@@ -27,6 +27,7 @@ export default class App extends React.Component {
       ],
       displayNewTrackerDialog: false,
       newTracker: '',
+      newTrackerNameError: false,
     }
   }
 
@@ -71,12 +72,12 @@ export default class App extends React.Component {
         footer={
           <DialogFooter>
             <DialogButton
-              text="CANCEL"
+              text='CANCEL'
               bordered
               onPress={() => this.clearNewTrackerDialog()}
             />
             <DialogButton
-              text="OK"
+              text='OK'
               bordered
               onPress={() => this.addNewTracker(this.state.newTracker)}
             />
@@ -86,8 +87,9 @@ export default class App extends React.Component {
         <DialogContent style={{width: 200, height: 70}}>
           <View style={styles.newTrackerDialogContentView}>
             <TextInput style={{fontSize: 20}}
-              placeholder="Tracker name"
-              onChangeText={(text) => this.setState({newTracker: text})}
+              placeholder='Tracker name'
+              placeholderTextColor={this.state.newTrackerNameError ? 'red' : ''}
+              onChangeText={(text) => this.setState({newTracker: text, newTrackerNameError: false})}
             />
           </View>
         </DialogContent>
@@ -107,15 +109,22 @@ export default class App extends React.Component {
     this.setState({
       displayNewTrackerDialog: false,
       newTracker: '',
+      newTrackerNameError: false
     })
   }
 
   addNewTracker(title) {
-    this.setState({
-      trackers: [{title}, ...this.state.trackers],
-      displayNewTrackerDialog: false,
-      newTracker: '',
-    })
+    if (title.trim() === '') {
+      this.setState({
+        newTrackerNameError: true
+      })
+    } else {
+      this.setState({
+        trackers: [{title}, ...this.state.trackers],
+        displayNewTrackerDialog: false,
+        newTracker: '',
+      })
+    }
   }
 
   navigateToTrackerScreen() {
