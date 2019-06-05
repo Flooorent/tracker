@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, FlatList, Text, View} from 'react-native';
 import {Calendar} from 'react-native-calendars'
-import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog'
+import Dialog, {DialogButton, DialogContent, DialogFooter, DialogTitle} from 'react-native-popup-dialog'
 import styles from './src/styles'
 import { TextInput } from 'react-native-gesture-handler';
 
@@ -68,16 +68,28 @@ export default class App extends React.Component {
       <Dialog
         visible={this.state.displayNewTrackerDialog}
         onTouchOutside={() => this.clearNewTrackerDialog()}
-        dialogTitle={<DialogTitle title="New tracker's name"/>}
+        footer={
+          <DialogFooter>
+            <DialogButton
+              text="CANCEL"
+              bordered
+              onPress={() => this.clearNewTrackerDialog()}
+            />
+            <DialogButton
+              text="OK"
+              bordered
+              onPress={() => this.addNewTracker(this.state.newTracker)}
+            />
+          </DialogFooter>
+        }
       >
-        <DialogContent>
-          <TextInput
-            placeholder="The name here"
-            onChangeText={(text) => this.setState({newTracker: text})}
-          />
-          <DialogButton
-            text="Create"
-            onPress={() => this.addNewTracker(this.state.newTracker)}/>
+        <DialogContent style={{width: 200, height: 70}}>
+          <View style={styles.newTrackerDialogContentView}>
+            <TextInput style={{fontSize: 20}}
+              placeholder="Tracker name"
+              onChangeText={(text) => this.setState({newTracker: text})}
+            />
+          </View>
         </DialogContent>
       </Dialog>
 
@@ -142,7 +154,7 @@ export default class App extends React.Component {
           visible={this.state.displayDialog}
           onTouchOutside={() => this.clearDialog()}
           dialogTitle={<DialogTitle title={this.state.dialogTitle}/>}
-          dialogStyle={styles.dialog}
+          dialogStyle={styles.winLossDialog}
         >
           <DialogContent style={styles.buttonsContainer}>
             <DialogButton

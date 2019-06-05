@@ -11,7 +11,6 @@
 - add weekly tracker
 - add monthly tracker
 - new tracker dialog
-    - style center
     - show error message when creating a new tracker with a name that's already exists
     - when touch outside, keep new tracker name in memory in case it was a misclick
     - new tracker's name must not be empty

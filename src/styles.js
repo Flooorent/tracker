@@ -7,7 +7,7 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    dialog: {
+    winLossDialog: {
         flex: 0.25,
         flexDirection: 'column',
         alignItems: 'center',
@@ -20,5 +20,12 @@ export default StyleSheet.create({
     },
     trackersHeader: {
         flex: 0.2
+    },
+    newTrackerDialogContentView: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: 20,
     }
 });
