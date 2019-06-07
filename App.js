@@ -62,13 +62,17 @@ export default class App extends React.Component {
           onPress={() => this.showNewTrackerDialog()}
         />
         
-        <FlatList
-          data={this.state.trackers}
-          renderItem={
-            ({item}) => <Button id={item.title} title={item.title} onPress={() => this.navigateToTrackerScreen(item.title)}/>
-          }
-          keyExtractor={(item) => item.title}
-        />
+        {
+          this.state.trackers.length > 0 ?
+          <FlatList
+            data={this.state.trackers}
+            renderItem={
+              ({item}) => <Button id={item.title} title={item.title} onPress={() => this.navigateToTrackerScreen(item.title)}/>
+            }
+            keyExtractor={(item) => item.title}
+          /> :
+          <Text>You don't have any tracker yet</Text>
+        }
 
         <Dialog
           visible={this.state.displayNewTrackerDialog}
