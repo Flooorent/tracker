@@ -88,7 +88,7 @@ export default class App extends React.Component {
           <View style={styles.newTrackerDialogContentView}>
             <TextInput style={{fontSize: 20}}
               placeholder='Tracker name'
-              placeholderTextColor={this.state.newTrackerNameError ? 'red' : ''}
+              placeholderTextColor={this.state.newTrackerNameError ? 'red' : 'grey'}
               onChangeText={(text) => this.setState({newTracker: text, newTrackerNameError: false})}
             />
           </View>
