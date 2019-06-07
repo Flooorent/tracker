@@ -7,6 +7,7 @@ import { TextInput } from 'react-native-gesture-handler';
 
 const TRACKER = 'tracker'
 const ALL_TRACKERS = 'allTrackers'
+const DEFAULT_TRACKER_NAME_ERROR_MESSAGE = ''
 
 export default class App extends React.Component {
   constructor(props) {
@@ -28,6 +29,7 @@ export default class App extends React.Component {
       displayNewTrackerDialog: false,
       newTracker: '',
       newTrackerNameError: false,
+      newTrackerNameErrorMessage: DEFAULT_TRACKER_NAME_ERROR_MESSAGE,
     }
   }
 
@@ -66,35 +68,43 @@ export default class App extends React.Component {
           keyExtractor={(item) => item.title}
         />
 
-      <Dialog
-        visible={this.state.displayNewTrackerDialog}
-        onTouchOutside={() => this.clearNewTrackerDialog()}
-        footer={
-          <DialogFooter>
-            <DialogButton
-              text='CANCEL'
-              bordered
-              onPress={() => this.clearNewTrackerDialog()}
-            />
-            <DialogButton
-              text='OK'
-              bordered
-              onPress={() => this.addNewTracker(this.state.newTracker)}
-            />
-          </DialogFooter>
-        }
-      >
-        <DialogContent style={{width: 200, height: 70}}>
-          <View style={styles.newTrackerDialogContentView}>
-            <TextInput style={{fontSize: 20}}
-              placeholder='Tracker name'
-              placeholderTextColor={this.state.newTrackerNameError ? 'red' : 'grey'}
-              onChangeText={(text) => this.setState({newTracker: text, newTrackerNameError: false})}
-            />
-          </View>
-        </DialogContent>
-      </Dialog>
-
+        <Dialog
+          visible={this.state.displayNewTrackerDialog}
+          onTouchOutside={() => this.clearNewTrackerDialog()}
+          footer={
+            <DialogFooter>
+              <DialogButton
+                text='CANCEL'
+                bordered
+                onPress={() => this.clearNewTrackerDialog()}
+              />
+              <DialogButton
+                text='OK'
+                bordered
+                onPress={() => this.addNewTracker(this.state.newTracker)}
+              />
+            </DialogFooter>
+          }
+        >
+          <DialogContent style={{width: 200, height: this.state.newTrackerNameError ? 120 : 70}}>
+            <View style={styles.newTrackerDialogContentView}>
+              <TextInput style={{fontSize: 20}}
+                placeholder='Tracker name'
+                onChangeText={(text) => this.setState({
+                  newTracker: text,
+                  newTrackerNameError: false,
+                  newTrackerNameErrorMessage: DEFAULT_TRACKER_NAME_ERROR_MESSAGE
+                })}
+              />
+            </View>
+            {
+              this.state.newTrackerNameError &&
+              <View style={styles.container}>
+                <Text style={{textAlign: 'center'}}>{this.state.newTrackerNameErrorMessage}</Text>
+              </View>
+            }
+          </DialogContent>
+        </Dialog>
       </View>
     )
   }
@@ -109,22 +119,36 @@ export default class App extends React.Component {
     this.setState({
       displayNewTrackerDialog: false,
       newTracker: '',
-      newTrackerNameError: false
+      newTrackerNameError: false,
+      newTrackerNameErrorMessage: DEFAULT_TRACKER_NAME_ERROR_MESSAGE,
     })
   }
 
   addNewTracker(title) {
     if (title.trim() === '') {
-      this.setState({
-        newTrackerNameError: true
-      })
-    } else {
-      this.setState({
-        trackers: [{title}, ...this.state.trackers],
-        displayNewTrackerDialog: false,
-        newTracker: '',
+      return this.setState({
+        newTrackerNameError: true,
+        newTrackerNameErrorMessage: 'Tracker name must not be empty'
       })
     }
+
+    // TODO: we can make at maximum one pass over the array
+    const indexOfTrackerWithSameTitle = this.state.trackers.map(tracker => tracker.title).indexOf(title)
+
+    if (indexOfTrackerWithSameTitle >= 0) {
+      return this.setState({
+        newTrackerNameError: true,
+        newTrackerNameErrorMessage: 'Tracker name already exists'
+      })
+    }
+
+    this.setState({
+      trackers: [{title}, ...this.state.trackers],
+      displayNewTrackerDialog: false,
+      newTracker: '',
+      newTrackerNameError: false,
+      newTrackerNameErrorMessage: DEFAULT_TRACKER_NAME_ERROR_MESSAGE,
+    })
   }
 
   navigateToTrackerScreen() {
