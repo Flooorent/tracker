@@ -6,11 +6,13 @@
     - add success percentage for the month (from the day it started)
     - add success percentage for the year (from the day it started)
     - display those stats below calendar
-- parameter to fill automatically days with either win or loss, does nothing by default
-- add weekly tracker
-- add monthly tracker
-- new tracker dialog
-    - when touch outside, keep new tracker name in memory in case it was a misclick
 - quand la liste des trackers est longue
     - la ligne "Add new tracker" va vers le haut de l'écran, pareil pour tout ce qu'il y a au-dessus
     - quand on slide, on a une barre de slider sur le côté dégueulasse, trop grande et pas assez proche du bord droit de l'écran
+
+
+- parameter to fill automatically days with either win or loss, does nothing by default
+
+
+- add weekly tracker
+- add monthly tracker

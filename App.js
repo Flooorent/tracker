@@ -9,6 +9,7 @@ const TRACKER = 'tracker'
 const ALL_TRACKERS = 'allTrackers'
 const DEFAULT_TRACKER_NAME_ERROR_MESSAGE = ''
 const DEFAULT_CURRENT_TRACKER_SCREEN = ''
+const DEFAULT_NEW_TRACKER_NAME = ''
 
 export default class App extends React.Component {
   constructor(props) {
@@ -29,7 +30,7 @@ export default class App extends React.Component {
         {title: 'Second Tracker'},
       ],
       displayNewTrackerDialog: false,
-      newTracker: '',
+      newTracker: DEFAULT_NEW_TRACKER_NAME,
       newTrackerNameError: false,
       newTrackerNameErrorMessage: DEFAULT_TRACKER_NAME_ERROR_MESSAGE,
     }
@@ -76,7 +77,7 @@ export default class App extends React.Component {
 
         <Dialog
           visible={this.state.displayNewTrackerDialog}
-          onTouchOutside={() => this.clearNewTrackerDialog()}
+          onTouchOutside={() => this.clearNewTrackerDialog({resetNewTrackerName: false})}
           footer={
             <DialogFooter>
               <DialogButton
@@ -96,6 +97,8 @@ export default class App extends React.Component {
             <View style={styles.newTrackerDialogContentView}>
               <TextInput style={{fontSize: 20}}
                 placeholder='Tracker name'
+                autoFocus={true}
+                value={this.state.newTracker}
                 onChangeText={(text) => this.setState({
                   newTracker: text,
                   newTrackerNameError: false,
@@ -121,10 +124,10 @@ export default class App extends React.Component {
     })
   }
 
-  clearNewTrackerDialog() {
+  clearNewTrackerDialog({resetNewTrackerName = true} = {}) {
     this.setState({
       displayNewTrackerDialog: false,
-      newTracker: '',
+      newTracker: resetNewTrackerName ? DEFAULT_NEW_TRACKER_NAME : this.state.newTracker,
       newTrackerNameError: false,
       newTrackerNameErrorMessage: DEFAULT_TRACKER_NAME_ERROR_MESSAGE,
     })
@@ -151,7 +154,7 @@ export default class App extends React.Component {
     this.setState({
       trackers: [{title}, ...this.state.trackers],
       displayNewTrackerDialog: false,
-      newTracker: '',
+      newTracker: DEFAULT_NEW_TRACKER_NAME,
       newTrackerNameError: false,
       newTrackerNameErrorMessage: DEFAULT_TRACKER_NAME_ERROR_MESSAGE,
     })
@@ -206,11 +209,11 @@ export default class App extends React.Component {
         >
           <DialogContent style={styles.buttonsContainer}>
             <DialogButton
-              text="Win"
+              text='Win'
               onPress={() => console.log('Pressed WIN')}
             />
             <DialogButton
-              text="Loss"
+              text='Loss'
               onPress={() => console.log('Pressed LOSS')}
             />
           </DialogContent>
