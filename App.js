@@ -134,7 +134,9 @@ export default class App extends React.Component {
   }
 
   addNewTracker(title) {
-    if (title.trim() === '') {
+    const cleanedTitle = title.trim()
+
+    if (cleanedTitle === '') {
       return this.setState({
         newTrackerNameError: true,
         newTrackerNameErrorMessage: 'Tracker name must not be empty'
@@ -142,7 +144,7 @@ export default class App extends React.Component {
     }
 
     // TODO: we can make at maximum one pass over the array
-    const indexOfTrackerWithSameTitle = this.state.trackers.map(tracker => tracker.title).indexOf(title)
+    const indexOfTrackerWithSameTitle = this.state.trackers.map(tracker => tracker.title).indexOf(cleanedTitle)
 
     if (indexOfTrackerWithSameTitle >= 0) {
       return this.setState({
@@ -152,7 +154,7 @@ export default class App extends React.Component {
     }
 
     this.setState({
-      trackers: [{title}, ...this.state.trackers],
+      trackers: [{title: cleanedTitle}, ...this.state.trackers],
       displayNewTrackerDialog: false,
       newTracker: DEFAULT_NEW_TRACKER_NAME,
       newTrackerNameError: false,
