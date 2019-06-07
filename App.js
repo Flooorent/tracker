@@ -8,6 +8,7 @@ import { TextInput } from 'react-native-gesture-handler';
 const TRACKER = 'tracker'
 const ALL_TRACKERS = 'allTrackers'
 const DEFAULT_TRACKER_NAME_ERROR_MESSAGE = ''
+const DEFAULT_CURRENT_TRACKER_SCREEN = ''
 
 export default class App extends React.Component {
   constructor(props) {
@@ -22,6 +23,7 @@ export default class App extends React.Component {
       displayDialog: false,
       dialogTitle: '',
       currentScreen: ALL_TRACKERS,
+      currentTrackerScreen: DEFAULT_CURRENT_TRACKER_SCREEN,
       trackers: [
         {title: 'First Tracker'},
         {title: 'Second Tracker'},
@@ -63,7 +65,7 @@ export default class App extends React.Component {
         <FlatList
           data={this.state.trackers}
           renderItem={
-            ({item}) => <Button id={item.title} title={item.title} onPress={() => this.navigateToTrackerScreen()}/>
+            ({item}) => <Button id={item.title} title={item.title} onPress={() => this.navigateToTrackerScreen(item.title)}/>
           }
           keyExtractor={(item) => item.title}
         />
@@ -151,24 +153,33 @@ export default class App extends React.Component {
     })
   }
 
-  navigateToTrackerScreen() {
+  navigateToTrackerScreen(trackerName) {
     this.setState({
-      currentScreen: TRACKER
+      currentScreen: TRACKER,
+      currentTrackerScreen: trackerName,
     })
   }
 
   navigateToAllTrackersScreen() {
     this.setState({
-      currentScreen: ALL_TRACKERS
+      currentScreen: ALL_TRACKERS,
+      currentTrackerScreen: DEFAULT_CURRENT_TRACKER_SCREEN,
     })
   }
 
-  renderTrackerScreen() {
+  renderTrackerScreen(trackerName) {
     const today = new Date()
     const minDate = '1998-17-12'
 
     return (
       <View style={styles.container}>
+
+        <Text>{trackerName}</Text>
+
+        <Button
+          title='Delete'
+          onPress={() => this.deleteTracker(trackerName)}
+        />
 
         <Button
           title='Back to all trackers'
@@ -205,12 +216,33 @@ export default class App extends React.Component {
     )
   }
 
+  deleteTracker(trackerName) {
+    // TODO: enlever de tous les trackers celui avec le title trackerName
+    const indexOfTrackerToDelete = this.state.trackers.map(tracker => tracker.title).indexOf(trackerName)
+
+    if (indexOfTrackerToDelete >= 0) {
+      // TODO: faire une deep copy ? Ou utiliser un objet à la place d'un array pour this.state.trackers
+      const newTrackers = [...this.state.trackers.slice(0, indexOfTrackerToDelete), ...this.state.trackers.slice(indexOfTrackerToDelete + 1)]
+
+      return this.setState({
+        trackers: newTrackers,
+        currentScreen: ALL_TRACKERS,
+        currentTrackerScreen: DEFAULT_CURRENT_TRACKER_SCREEN,
+      })
+    }
+
+    this.setState({
+      currentScreen: ALL_TRACKERS,
+      currentTrackerScreen: DEFAULT_CURRENT_TRACKER_SCREEN,
+    })
+  }
+
   render() {
     const currentScreen = this.state.currentScreen
 
     return (
       <View style={styles.container}>
-        { currentScreen === TRACKER && this.renderTrackerScreen() }
+        { currentScreen === TRACKER && this.renderTrackerScreen(this.state.currentTrackerScreen) }
         { currentScreen === ALL_TRACKERS && this.renderAllTrackersScreen() }
       </View>
     );
