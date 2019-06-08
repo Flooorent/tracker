@@ -1,8 +1,7 @@
 import React from 'react';
-import {Button, Text, View} from 'react-native';
+import {AsyncStorage, Button, Text, View} from 'react-native';
 import {Calendar} from 'react-native-calendars'
 import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog'
-
 import styles from '../styles'
 
 export default class TrackerScreen extends React.Component {
@@ -13,6 +12,56 @@ export default class TrackerScreen extends React.Component {
             markedDates: {},
             displayDialog: false,
             dialogTitle: '',
+        }
+    }
+
+    async componentDidMount() {
+        const trackerName = this.props.navigation.getParam('trackerName')
+        const deleteTracker = this.props.navigation.getParam('deleteTracker')
+
+        const tempState = {
+            trackerName,
+            deleteTracker
+        }
+
+        try {
+            const markedDates = await this.fetchMarkedDates(trackerName)
+
+            this.setState({
+                ...tempState,
+                markedDates,
+            })
+        } catch(error) {
+            // TODO: log to sentry or something
+            // TODO: display some error message to the user like "we couldn't find your marked dates for some reason"
+            console.log(`Error after mounting tracker ${trackerName}`, error)
+            this.setState(tempState)
+        }
+    }
+
+    async fetchMarkedDates(trackerName) {
+        try {
+            // TODO: use id instead of title
+            const markedDates = await AsyncStorage.getItem(`tracker:${trackerName}`)
+
+            if (markedDates === null) {
+                return {}
+            }
+
+            return JSON.parse(markedDates)
+        } catch(error) {
+            // TODO: log to sentry or something
+            console.log(`Error fetching marked dates for tracker ${trackerName}`, error)
+        }
+    }
+
+    // TODO: add trackerName parameter instead of relying on state
+    async saveMarkedDates(markedDates) {
+        try {
+            await AsyncStorage.setItem(`tracker:${this.state.trackerName}`, JSON.stringify(markedDates))
+        } catch (error) {
+            // TODO: log to sentry or something
+            console.log(`Error when saving marked dates for tracker ${this.state.trackerName}`, error)
         }
     }
 
@@ -30,15 +79,15 @@ export default class TrackerScreen extends React.Component {
         })
     }
     
-    addWinDay(day) {
-        this.addDay(day, 'blue')
+    async addWinDay(day) {
+        await this.addDay(day, 'blue')
     }
 
-    addLossDay(day) {
-        this.addDay(day, 'red')
+    async addLossDay(day) {
+        await this.addDay(day, 'red')
     }
 
-    addDay(day, selectedColor) {
+    async addDay(day, selectedColor) {
         const markedDates = {...this.state.markedDates}
 
         markedDates[day] = {
@@ -46,7 +95,19 @@ export default class TrackerScreen extends React.Component {
             selectedColor
         }
 
+        try {
+            this.saveMarkedDates(markedDates)
+        } catch (error) {
+            // TODO: log to sentry or something
+            // TODO: display something to user
+            console.log(`Error when adding day for tracker ${this.state.trackerName}`, error)
+        }
+
         this.setState({markedDates}, this.clearDialog)
+    }
+
+    async removeTrackerData(trackerName) {
+        await AsyncStorage.removeItem(`tracker:${trackerName}`)
     }
 
     render() {
@@ -56,12 +117,14 @@ export default class TrackerScreen extends React.Component {
         return (
             <View style={styles.container}>
 
-                <Text>{this.props.navigation.getParam('trackerName')}</Text>
+                <Text>{this.state.trackerName}</Text>
 
                 <Button
                     title='Delete'
                     onPress={() => {
-                        this.props.navigation.getParam('deleteTracker')()
+                        // TODO: make it an async function, try catch that, display error message to user
+                        this.removeTrackerData(this.state.trackerName)
+                        this.state.deleteTracker()
                         this.props.navigation.navigate('AllTrackers')
                     }}
                 />

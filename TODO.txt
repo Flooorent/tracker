@@ -1,5 +1,12 @@
-- use AsyncStorage
+- use AsyncStorage for all trackers
 - tracker screen: mettre le bouton 'delete' en haut à droite dans la partie navigation
+- pouvoir renommer tracker
+    - avoir un id unique pour chaque tracker qui soit indépendant du titre du tracker
+    - depuis all trackers screen
+    - depuis tracker screen
+    - si l'on renomme un tracker, il faut modifier la key dans AsyncStorage car celle-ci est basée sur le titre du tracker
+        => le mieux c'est d'avoir un id unique pour chaque tracker qui soit indépendant du titre, comme ça si l'on renomme le tracker on n'a pas besoin de modifier la clé dans AsyncStorage
+- ajouter la possibilité d'enlever un win ou un loss pour un day
 - add stats at higher levels, e.g. if daily tracker:
     - add success percentage for the week (from the day it started)
     - add success percentage for the month (from the day it started)
