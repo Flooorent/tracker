@@ -10,12 +10,7 @@ export default class TrackerScreen extends React.Component {
         super(props)
 
         this.state = {
-            markedDates: {
-                '2019-05-29': {selected: true, selectedColor: 'blue'},
-                '2019-05-30': {selected: true, selectedColor: 'blue'},
-                '2019-05-31': {selected: true, selectedColor: 'blue'},
-                '2019-06-01': {selected: true, selectedColor: 'red'},
-            },
+            markedDates: {},
             displayDialog: false,
             dialogTitle: '',
         }
@@ -33,6 +28,25 @@ export default class TrackerScreen extends React.Component {
             displayDialog: false,
             dialogTitle: ''
         })
+    }
+    
+    addWinDay(day) {
+        this.addDay(day, 'blue')
+    }
+
+    addLossDay(day) {
+        this.addDay(day, 'red')
+    }
+
+    addDay(day, selectedColor) {
+        const markedDates = {...this.state.markedDates}
+
+        markedDates[day] = {
+            selected: true,
+            selectedColor
+        }
+
+        this.setState({markedDates}, this.clearDialog)
     }
 
     render() {
@@ -69,11 +83,11 @@ export default class TrackerScreen extends React.Component {
                 <DialogContent style={styles.buttonsContainer}>
                     <DialogButton
                         text='Win'
-                        onPress={() => console.log('Pressed WIN')}
+                        onPress={() => this.addWinDay(this.state.dialogTitle)}
                     />
                     <DialogButton
                         text='Loss'
-                        onPress={() => console.log('Pressed LOSS')}
+                        onPress={() => this.addLossDay(this.state.dialogTitle)}
                     />
                 </DialogContent>
                 </Dialog>

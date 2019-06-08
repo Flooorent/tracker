@@ -12,15 +12,12 @@ export default class AllTrackersScreen extends React.Component {
     static navigationOptions = {
         title: 'All Trackers'
     }
-    
+
     constructor(props) {
         super(props)
 
         this.state = {
-            trackers: [
-                {title: 'First Tracker'},
-                {title: 'Second Tracker'},
-            ],
+            trackers: [],
             displayNewTrackerDialog: false,
             newTracker: DEFAULT_NEW_TRACKER_NAME,
             newTrackerNameError: false,

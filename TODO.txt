@@ -1,5 +1,5 @@
-- save win or loss
 - use AsyncStorage
+- tracker screen: mettre le bouton 'delete' en haut à droite dans la partie navigation
 - add stats at higher levels, e.g. if daily tracker:
     - add success percentage for the week (from the day it started)
     - add success percentage for the month (from the day it started)
@@ -11,7 +11,7 @@
 
 
 - parameter to fill automatically days with either win or loss, does nothing by default
-
+- pouvoir réordonner les trackers
 
 - add weekly tracker
 - add monthly tracker
