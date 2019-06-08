@@ -1,4 +1,3 @@
-- use react navigation
 - save win or loss
 - use AsyncStorage
 - add stats at higher levels, e.g. if daily tracker:
