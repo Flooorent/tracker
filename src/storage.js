@@ -8,7 +8,7 @@ async function removeTrackerFromAllTrackers(trackerName) {
         const indexOfTrackerToDelete = allTrackers.map(tracker => tracker.title).indexOf(trackerName)
 
         if(indexOfTrackerToDelete >= 0) {
-            const newAllTrackers = [allTrackers.slice(0, indexOfTrackerToDelete), ...allTrackers.slice(indexOfTrackerToDelete + 1)]
+            const newAllTrackers = [...allTrackers.slice(0, indexOfTrackerToDelete), ...allTrackers.slice(indexOfTrackerToDelete + 1)]
             await saveAllTrackers(newAllTrackers)
         }
     } catch(e) {

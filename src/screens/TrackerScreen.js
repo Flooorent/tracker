@@ -3,10 +3,23 @@ import {AsyncStorage, Button, Text, View} from 'react-native';
 import {Calendar} from 'react-native-calendars'
 import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog'
 
-import {removeTrackerFromAllTrackers} from '../storage'
 import styles from '../styles'
 
 export default class TrackerScreen extends React.Component {
+    static navigationOptions = ({navigation}) => {
+        return {
+            title: 'Tracker',
+            headerRight: (
+                <Button
+                    title='Delete'
+                    onPress={() => navigation.navigate('Delete', {
+                        trackerName: navigation.getParam('trackerName'),
+                        deleteTracker: navigation.getParam('deleteTracker'),
+                    })}
+                />
+            )
+        }
+    }
     constructor(props) {
         super(props)
 
@@ -130,10 +143,6 @@ export default class TrackerScreen extends React.Component {
         this.clearDialog()
     }
 
-    async removeTrackerData(trackerName) {
-        await AsyncStorage.removeItem(`tracker:${trackerName}`)
-    }
-
     render() {
         const today = new Date()
         const minDate = '1998-17-12'
@@ -142,17 +151,6 @@ export default class TrackerScreen extends React.Component {
             <View style={styles.container}>
 
                 <Text>{this.state.trackerName}</Text>
-
-                <Button
-                    title='Delete'
-                    onPress={() => {
-                        // TODO: make it an async function, try catch that, display error message to user
-                        this.removeTrackerData(this.state.trackerName)
-                        removeTrackerFromAllTrackers(this.state.trackerName)
-                        this.state.deleteTracker()
-                        this.props.navigation.navigate('AllTrackers')
-                    }}
-                />
 
                 <Calendar
                     maxDate={today}

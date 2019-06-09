@@ -1,4 +1,3 @@
-- tracker screen: mettre le bouton 'delete' en haut à droite dans la partie navigation
 - pouvoir renommer tracker
     - avoir un id unique pour chaque tracker qui soit indépendant du titre du tracker
     - depuis all trackers screen
