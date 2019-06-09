@@ -103,9 +103,31 @@ export default class TrackerScreen extends React.Component {
             // TODO: log to sentry or something
             // TODO: display something to user
             console.log(`Error when adding day for tracker ${this.state.trackerName}`, error)
+            return
         }
 
         this.setState({markedDates}, this.clearDialog)
+    }
+
+    async clearDay(day) {
+        const markedDates = {...this.state.markedDates}
+
+        if (markedDates[day]) {
+            delete markedDates[day]
+
+            try {
+                this.saveMarkedDates(markedDates)
+            } catch (error) {
+                // TODO: log to sentry or something
+                // TODO: display something to user
+                console.log(`Error when adding day for tracker ${this.state.trackerName}`, error)
+                return
+            }
+
+            this.setState({markedDates}, this.clearDialog)
+        }
+
+        this.clearDialog()
     }
 
     async removeTrackerData(trackerName) {
@@ -148,11 +170,15 @@ export default class TrackerScreen extends React.Component {
                 >
                 <DialogContent style={styles.buttonsContainer}>
                     <DialogButton
-                        text='Win'
+                        text='CLEAR'
+                        onPress={() => this.clearDay(this.state.dialogTitle)}
+                    />
+                    <DialogButton
+                        text='WIN'
                         onPress={() => this.addWinDay(this.state.dialogTitle)}
                     />
                     <DialogButton
-                        text='Loss'
+                        text='LOSS'
                         onPress={() => this.addLossDay(this.state.dialogTitle)}
                     />
                 </DialogContent>
