@@ -1,11 +1,14 @@
-import {createAppContainer, createStackNavigator} from 'react-navigation'
-import {AllTrackersScreen, TrackerScreen} from './src/screens'
+import {createAppContainer, createStackNavigator, createSwitchNavigator} from 'react-navigation'
+import {AllTrackersScreen, DeleteScreen, TrackerScreen} from './src/screens'
 
-const AppNavigator = createStackNavigator(
-  {
-    AllTrackers: AllTrackersScreen,
-    Tracker: TrackerScreen,
-  }
-)
+const TrackerSwitch = createSwitchNavigator({
+  Tracker: TrackerScreen,
+  Delete: DeleteScreen,
+})
+
+const AppNavigator = createStackNavigator({
+  AllTrackers: AllTrackersScreen,
+  TrackerSwitch: TrackerSwitch,
+})
 
 export default createAppContainer(AppNavigator)
