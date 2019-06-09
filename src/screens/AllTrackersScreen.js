@@ -1,8 +1,7 @@
 import React from 'react'
-import {Button, FlatList, Text, View} from 'react-native'
+import {AsyncStorage, Button, FlatList, Text, View} from 'react-native'
 import {TextInput} from 'react-native-gesture-handler'
 import Dialog, {DialogButton, DialogContent, DialogFooter} from 'react-native-popup-dialog'
-
 import styles from '../styles'
 
 const DEFAULT_NEW_TRACKER_NAME = ''
@@ -25,6 +24,31 @@ export default class AllTrackersScreen extends React.Component {
         }
     }
 
+    async componentDidMount() {
+        const allTrackers = await this.fetchAllTrackers()
+
+        this.setState({
+            trackers: allTrackers,
+        })
+    }
+
+    async fetchAllTrackers() {
+        try {
+            const allTrackers = await AsyncStorage.getItem('allTrackers')
+
+            if (allTrackers === null) {
+                return []
+            }
+    
+            return JSON.parse(allTrackers)
+        } catch(e) {
+            // TODO: log to sentry or something
+            // TODO: display error message to user
+            console.error("Couldn't fetch all trackers")
+            return []
+        }
+    }
+
     showNewTrackerDialog() {
         this.setState({
             displayNewTrackerDialog: true,
@@ -40,7 +64,7 @@ export default class AllTrackersScreen extends React.Component {
         })
     }
 
-    addNewTracker(title) {
+    async addNewTracker(title) {
         const cleanedTitle = title.trim()
     
         if (cleanedTitle === '') {
@@ -59,14 +83,29 @@ export default class AllTrackersScreen extends React.Component {
                 newTrackerNameErrorMessage: 'Tracker name already exists'
             })
         }
-    
+
+        const newAllTrackers = [{title: cleanedTitle}, ...this.state.trackers]
+
+        try {
+            await this.saveAllTrackers(newAllTrackers)
+        } catch(e) {
+            // TODO: log to sentry or something
+            // TODO: display error message to user
+            console.log("Couldn't save all trackers")
+            return
+        }
+        
         this.setState({
-            trackers: [{title: cleanedTitle}, ...this.state.trackers],
+            trackers: newAllTrackers,
             displayNewTrackerDialog: false,
             newTracker: DEFAULT_NEW_TRACKER_NAME,
             newTrackerNameError: false,
             newTrackerNameErrorMessage: DEFAULT_TRACKER_NAME_ERROR_MESSAGE,
         })
+    }
+
+    async saveAllTrackers(allTrackers) {
+        await AsyncStorage.setItem('allTrackers', JSON.stringify(allTrackers))
     }
 
     deleteTracker(trackerName) {
