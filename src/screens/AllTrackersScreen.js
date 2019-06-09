@@ -2,6 +2,8 @@ import React from 'react'
 import {AsyncStorage, Button, FlatList, Text, View} from 'react-native'
 import {TextInput} from 'react-native-gesture-handler'
 import Dialog, {DialogButton, DialogContent, DialogFooter} from 'react-native-popup-dialog'
+
+import {fetchAllTrackers, saveAllTrackers} from '../storage'
 import styles from '../styles'
 
 const DEFAULT_NEW_TRACKER_NAME = ''
@@ -25,28 +27,11 @@ export default class AllTrackersScreen extends React.Component {
     }
 
     async componentDidMount() {
-        const allTrackers = await this.fetchAllTrackers()
+        const allTrackers = await fetchAllTrackers()
 
         this.setState({
             trackers: allTrackers,
         })
-    }
-
-    async fetchAllTrackers() {
-        try {
-            const allTrackers = await AsyncStorage.getItem('allTrackers')
-
-            if (allTrackers === null) {
-                return []
-            }
-    
-            return JSON.parse(allTrackers)
-        } catch(e) {
-            // TODO: log to sentry or something
-            // TODO: display error message to user
-            console.error("Couldn't fetch all trackers")
-            return []
-        }
     }
 
     showNewTrackerDialog() {
@@ -87,7 +72,7 @@ export default class AllTrackersScreen extends React.Component {
         const newAllTrackers = [{title: cleanedTitle}, ...this.state.trackers]
 
         try {
-            await this.saveAllTrackers(newAllTrackers)
+            await saveAllTrackers(newAllTrackers)
         } catch(e) {
             // TODO: log to sentry or something
             // TODO: display error message to user
@@ -102,10 +87,6 @@ export default class AllTrackersScreen extends React.Component {
             newTrackerNameError: false,
             newTrackerNameErrorMessage: DEFAULT_TRACKER_NAME_ERROR_MESSAGE,
         })
-    }
-
-    async saveAllTrackers(allTrackers) {
-        await AsyncStorage.setItem('allTrackers', JSON.stringify(allTrackers))
     }
 
     deleteTracker(trackerName) {

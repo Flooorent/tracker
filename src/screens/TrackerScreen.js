@@ -2,6 +2,8 @@ import React from 'react';
 import {AsyncStorage, Button, Text, View} from 'react-native';
 import {Calendar} from 'react-native-calendars'
 import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog'
+
+import {removeTrackerFromAllTrackers} from '../storage'
 import styles from '../styles'
 
 export default class TrackerScreen extends React.Component {
@@ -110,42 +112,6 @@ export default class TrackerScreen extends React.Component {
         await AsyncStorage.removeItem(`tracker:${trackerName}`)
     }
 
-    async removeTrackerFromAllTrackers(trackerName) {
-        try {
-            const allTrackers = await this.fetchAllTrackers()
-            const indexOfTrackerToDelete = allTrackers.map(tracker => tracker.title).indexOf(trackerName)
-    
-            if(indexOfTrackerToDelete >= 0) {
-                const newAllTrackers = [allTrackers.slice(0, indexOfTrackerToDelete), ...allTrackers.slice(indexOfTrackerToDelete + 1)]
-                await this.saveAllTrackers(newAllTrackers)
-            }
-        } catch(e) {
-            // TODO: log to sentry or something
-            console.error(`Couldn't remove tracker ${trackerName} from all trackers:`, e)
-        }
-    }
-
-    async fetchAllTrackers() {
-        try {
-            const allTrackers = await AsyncStorage.getItem('allTrackers')
-
-            if (allTrackers === null) {
-                return []
-            }
-    
-            return JSON.parse(allTrackers)
-        } catch(e) {
-            // TODO: log to sentry or something
-            // TODO: display error message to user
-            console.error("Couldn't fetch all trackers")
-            return []
-        }
-    }
-
-    async saveAllTrackers(allTrackers) {
-        await AsyncStorage.setItem('allTrackers', JSON.stringify(allTrackers))
-    }
-
     render() {
         const today = new Date()
         const minDate = '1998-17-12'
@@ -160,7 +126,7 @@ export default class TrackerScreen extends React.Component {
                     onPress={() => {
                         // TODO: make it an async function, try catch that, display error message to user
                         this.removeTrackerData(this.state.trackerName)
-                        this.removeTrackerFromAllTrackers(this.state.trackerName)
+                        removeTrackerFromAllTrackers(this.state.trackerName)
                         this.state.deleteTracker()
                         this.props.navigation.navigate('AllTrackers')
                     }}
