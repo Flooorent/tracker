@@ -5,6 +5,13 @@ import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-pop
 
 import styles from '../styles'
 
+const CLEAR = 'CLEAR'
+const WIN = 'WIN'
+const LOSS = 'LOSS'
+
+const WIN_COLOR = 'blue'
+const LOSS_COLOR = 'red'
+
 export default class TrackerScreen extends React.Component {
     static navigationOptions = ({navigation}) => {
         return {
@@ -29,6 +36,8 @@ export default class TrackerScreen extends React.Component {
             displayDialog: false,
             dialogTitle: '',
         }
+
+        this.updateDay = this.updateDay.bind(this)
     }
 
     async componentDidMount() {
@@ -94,13 +103,17 @@ export default class TrackerScreen extends React.Component {
             dialogTitle: ''
         })
     }
-    
-    async addWinDay(day) {
-        await this.addDay(day, 'blue')
-    }
 
-    async addLossDay(day) {
-        await this.addDay(day, 'red')
+    async updateDay(day, status) {
+        if (status === WIN) {
+            return await this.addDay(day, WIN_COLOR)
+        }
+
+        if (status === LOSS) {
+            return this.addDay(day, LOSS_COLOR)
+        }
+
+        await this.clearDay(day)
     }
 
     async addDay(day, selectedColor) {
@@ -167,22 +180,60 @@ export default class TrackerScreen extends React.Component {
                     dialogTitle={<DialogTitle title={this.state.dialogTitle}/>}
                     dialogStyle={styles.winLossDialog}
                 >
-                <DialogContent style={styles.buttonsContainer}>
-                    <DialogButton
-                        text='CLEAR'
-                        onPress={() => this.clearDay(this.state.dialogTitle)}
-                    />
-                    <DialogButton
-                        text='WIN'
-                        onPress={() => this.addWinDay(this.state.dialogTitle)}
-                    />
-                    <DialogButton
-                        text='LOSS'
-                        onPress={() => this.addLossDay(this.state.dialogTitle)}
-                    />
-                </DialogContent>
+                <StatusDialogContent
+                    markedDates={this.state.markedDates}
+                    day={this.state.dialogTitle}
+                    updateDay={(status) => this.updateDay(this.state.dialogTitle, status)} />
                 </Dialog>
             </View>
         )
     }
+}
+
+
+function StatusDialogContent(props) {
+    if (props.markedDates[props.day]) {
+        const isCurrentStatusWin = props.markedDates[props.day].selectedColor === WIN_COLOR
+
+        if (isCurrentStatusWin) {
+            return (
+                <DialogContent style={styles.buttonsContainer}>
+                    <DialogButton
+                        text={CLEAR}
+                        onPress={() => props.updateDay(CLEAR)}
+                    />
+                    <DialogButton
+                        text={LOSS}
+                        onPress={() => props.updateDay(LOSS)}
+                    />
+                </DialogContent>
+            )
+        }
+
+        return (
+            <DialogContent style={styles.buttonsContainer}>
+                <DialogButton
+                    text={CLEAR}
+                    onPress={() => props.updateDay(CLEAR)}
+                />
+                <DialogButton
+                    text={WIN}
+                    onPress={() => props.updateDay(WIN)}
+                />
+            </DialogContent>
+        )
+    }
+
+    return (
+        <DialogContent style={styles.buttonsContainer}>
+            <DialogButton
+                text={WIN}
+                onPress={() => props.updateDay(WIN)}
+            />
+            <DialogButton
+                text={LOSS}
+                onPress={() => props.updateDay(LOSS)}
+            />
+        </DialogContent>
+    )
 }
