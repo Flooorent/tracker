@@ -18,22 +18,24 @@ export default class DeleteScreen extends React.Component {
 
     componentDidMount() {
         const trackerName = this.props.navigation.getParam('trackerName')
-        const deleteTracker = this.props.navigation.getParam('deleteTracker')
+        const trackerId = this.props.navigation.getParam('trackerId')
+        const removeTrackerFromState = this.props.navigation.getParam('removeTrackerFromState')
 
         this.setState({
             trackerName,
-            deleteTracker,
+            trackerId,
+            removeTrackerFromState,
         })
     }
 
-    async removeTrackerData(trackerName) {
-        await AsyncStorage.removeItem(`tracker:${trackerName}`)
+    async removeTrackerData(trackerId) {
+        await AsyncStorage.removeItem(`tracker:${trackerId}`)
     }
 
     async deleteTracker() {
-        this.removeTrackerData(this.state.trackerName)
+        this.removeTrackerData(this.state.trackerId)
         removeTrackerFromAllTrackers(this.state.trackerName)
-        this.state.deleteTracker()
+        this.state.removeTrackerFromState()
         this.props.navigation.navigate('AllTrackers')
     }
 

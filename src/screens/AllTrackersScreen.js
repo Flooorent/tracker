@@ -1,7 +1,8 @@
 import React from 'react'
-import {AsyncStorage, Button, FlatList, Text, View} from 'react-native'
+import {Button, FlatList, Text, View} from 'react-native'
 import {TextInput} from 'react-native-gesture-handler'
 import Dialog, {DialogButton, DialogContent, DialogFooter} from 'react-native-popup-dialog'
+const uuid = require('uuid/v4')
 
 import {fetchAllTrackers, saveAllTrackers} from '../storage'
 import styles from '../styles'
@@ -69,7 +70,7 @@ export default class AllTrackersScreen extends React.Component {
             })
         }
 
-        const newAllTrackers = [{title: cleanedTitle}, ...this.state.trackers]
+        const newAllTrackers = [{title: cleanedTitle, id: uuid()}, ...this.state.trackers]
 
         try {
             await saveAllTrackers(newAllTrackers)
@@ -89,7 +90,7 @@ export default class AllTrackersScreen extends React.Component {
         })
     }
 
-    deleteTracker(trackerName) {
+    removeTrackerFromState(trackerName) {
         const indexOfTrackerToDelete = this.state.trackers.map(tracker => tracker.title).indexOf(trackerName)
     
         if (indexOfTrackerToDelete >= 0) {
@@ -126,12 +127,13 @@ export default class AllTrackersScreen extends React.Component {
                                     title={item.title}
                                     onPress={() => this.props.navigation.navigate('Tracker', {
                                         trackerName: item.title,
-                                        deleteTracker: () => this.deleteTracker(item.title)
+                                        trackerId: item.id,
+                                        removeTrackerFromState: () => this.removeTrackerFromState(item.title)
                                     })}
                                 />
                             )
                         }
-                        keyExtractor={(item) => item.title}
+                        keyExtractor={(item) => item.id}
                     /> :
                     <Text>You don't have any tracker yet</Text>
                 }

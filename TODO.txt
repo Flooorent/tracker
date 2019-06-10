@@ -1,9 +1,6 @@
 - pouvoir renommer tracker
-    - avoir un id unique pour chaque tracker qui soit indépendant du titre du tracker
     - depuis all trackers screen
     - depuis tracker screen
-    - si l'on renomme un tracker, il faut modifier la key dans AsyncStorage car celle-ci est basée sur le titre du tracker
-        => le mieux c'est d'avoir un id unique pour chaque tracker qui soit indépendant du titre, comme ça si l'on renomme le tracker on n'a pas besoin de modifier la clé dans AsyncStorage
 - add stats at higher levels, e.g. if daily tracker:
     - add success percentage for the week (from the day it started)
     - add success percentage for the month (from the day it started)
@@ -12,7 +9,9 @@
 - quand la liste des trackers est longue
     - la ligne "Add new tracker" va vers le haut de l'écran, pareil pour tout ce qu'il y a au-dessus
     - quand on slide, on a une barre de slider sur le côté dégueulasse, trop grande et pas assez proche du bord droit de l'écran
-
+- day:
+    - n'afficher CLEAR que si on a déjà un WIN ou LOSS
+    - avoir des carrés à la place des ronds
 
 - parameter to fill automatically days with either win or loss, does nothing by default
 - pouvoir réordonner les trackers

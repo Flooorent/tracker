@@ -14,7 +14,8 @@ export default class TrackerScreen extends React.Component {
                     title='Delete'
                     onPress={() => navigation.navigate('Delete', {
                         trackerName: navigation.getParam('trackerName'),
-                        deleteTracker: navigation.getParam('deleteTracker'),
+                        trackerid: navigation.getParam('trackerId'),
+                        removeTrackerFromState: navigation.getParam('removeTrackerFromState'),
                     })}
                 />
             )
@@ -32,15 +33,15 @@ export default class TrackerScreen extends React.Component {
 
     async componentDidMount() {
         const trackerName = this.props.navigation.getParam('trackerName')
-        const deleteTracker = this.props.navigation.getParam('deleteTracker')
+        const trackerId = this.props.navigation.getParam('trackerId')
 
         const tempState = {
             trackerName,
-            deleteTracker
+            trackerId,
         }
 
         try {
-            const markedDates = await this.fetchMarkedDates(trackerName)
+            const markedDates = await this.fetchMarkedDates(trackerId)
 
             this.setState({
                 ...tempState,
@@ -49,15 +50,15 @@ export default class TrackerScreen extends React.Component {
         } catch(error) {
             // TODO: log to sentry or something
             // TODO: display some error message to the user like "we couldn't find your marked dates for some reason"
-            console.log(`Error after mounting tracker ${trackerName}`, error)
+            console.log(`Error after mounting tracker ${trackerId}`, error)
             this.setState(tempState)
         }
     }
 
-    async fetchMarkedDates(trackerName) {
+    async fetchMarkedDates(trackerId) {
         try {
             // TODO: use id instead of title
-            const markedDates = await AsyncStorage.getItem(`tracker:${trackerName}`)
+            const markedDates = await AsyncStorage.getItem(`tracker:${trackerId}`)
 
             if (markedDates === null) {
                 return {}
@@ -66,17 +67,17 @@ export default class TrackerScreen extends React.Component {
             return JSON.parse(markedDates)
         } catch(error) {
             // TODO: log to sentry or something
-            console.log(`Error fetching marked dates for tracker ${trackerName}`, error)
+            console.log(`Error fetching marked dates for tracker ${trackerId}`, error)
         }
     }
 
     // TODO: add trackerName parameter instead of relying on state
     async saveMarkedDates(markedDates) {
         try {
-            await AsyncStorage.setItem(`tracker:${this.state.trackerName}`, JSON.stringify(markedDates))
+            await AsyncStorage.setItem(`tracker:${this.state.trackerId}`, JSON.stringify(markedDates))
         } catch (error) {
             // TODO: log to sentry or something
-            console.log(`Error when saving marked dates for tracker ${this.state.trackerName}`, error)
+            console.log(`Error when saving marked dates for tracker ${this.state.trackerId}`, error)
         }
     }
 
