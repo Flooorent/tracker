@@ -90,8 +90,8 @@ export default class AllTrackersScreen extends React.Component {
         })
     }
 
-    removeTrackerFromState(trackerName) {
-        const indexOfTrackerToDelete = this.state.trackers.map(tracker => tracker.title).indexOf(trackerName)
+    removeTrackerFromState(trackerId) {
+        const indexOfTrackerToDelete = this.state.trackers.map(tracker => tracker.id).indexOf(trackerId)
     
         if (indexOfTrackerToDelete >= 0) {
             // TODO: faire une deep copy ? Ou utiliser un objet à la place d'un array pour this.state.trackers
@@ -99,6 +99,21 @@ export default class AllTrackersScreen extends React.Component {
         
             return this.setState({
                 trackers: newTrackers,
+            })
+        }
+    }
+
+    renameTrackerInState(trackerId, newName) {
+        const indexOfTrackerToRename = this.state.trackers.map(tracker => tracker.id).indexOf(trackerId)
+    
+        if (indexOfTrackerToRename >= 0) {
+            // TODO: use spread operator when create-react-app allows it
+            // TODO: have a deep copy function somewhere for trackers since this line won't do a deep copy if we add another nested level
+            const newTrackersDeepCopy = this.state.trackers.map(tracker => Object.assign({}, tracker))
+            newTrackersDeepCopy[indexOfTrackerToRename].title = newName
+        
+            return this.setState({
+                trackers: newTrackersDeepCopy,
             })
         }
     }
@@ -128,7 +143,8 @@ export default class AllTrackersScreen extends React.Component {
                                     onPress={() => this.props.navigation.navigate('Tracker', {
                                         trackerName: item.title,
                                         trackerId: item.id,
-                                        removeTrackerFromState: () => this.removeTrackerFromState(item.title)
+                                        removeTrackerFromState: () => this.removeTrackerFromState(item.id),
+                                        renameTrackerInState: (newName) => this.renameTrackerInState(item.id, newName)
                                     })}
                                 />
                             )

@@ -2,8 +2,10 @@ import React from 'react';
 import {AsyncStorage, Button, Text, View} from 'react-native';
 import {Calendar} from 'react-native-calendars'
 import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog'
+import { TextInput } from 'react-native-gesture-handler';
 
 import styles from '../styles'
+import { renameTracker } from '../storage'
 
 const CLEAR = 'CLEAR'
 const WIN = 'WIN'
@@ -35,6 +37,7 @@ export default class TrackerScreen extends React.Component {
             markedDates: {},
             displayDialog: false,
             dialogTitle: '',
+            newName: ''
         }
 
         this.updateDay = this.updateDay.bind(this)
@@ -43,10 +46,13 @@ export default class TrackerScreen extends React.Component {
     async componentDidMount() {
         const trackerName = this.props.navigation.getParam('trackerName')
         const trackerId = this.props.navigation.getParam('trackerId')
+        const renameTrackerInParentState = this.props.navigation.getParam('renameTrackerInState')
 
         const tempState = {
             trackerName,
             trackerId,
+            newName: trackerName,
+            renameTrackerInParentState,
         }
 
         try {
@@ -157,6 +163,24 @@ export default class TrackerScreen extends React.Component {
         this.clearDialog()
     }
 
+    async updateTrackerName() {
+        console.log('updating tracker name')
+        const cleanedNewName = this.state.newName.trim()
+
+        if (cleanedNewName === '') {
+            return this.setState({
+                newName: this.state.trackerName,
+            })
+        }
+
+        await renameTracker(this.state.trackerId, cleanedNewName)
+        
+        this.setState({
+            trackerName: cleanedNewName,
+            newName: cleanedNewName,
+        }, () => this.state.renameTrackerInParentState(cleanedNewName))
+    }
+
     render() {
         const today = new Date()
         const minDate = '1998-17-12'
@@ -164,7 +188,12 @@ export default class TrackerScreen extends React.Component {
         return (
             <View style={styles.container}>
 
-                <Text>{this.state.trackerName}</Text>
+                <TextInput
+                    style={{ fontSize: 30 }}
+                    value={this.state.newName}
+                    onChangeText={(text) => this.setState({newName: text})}
+                    onEndEditing={() => this.updateTrackerName()}
+                />
 
                 <Calendar
                     maxDate={today}
