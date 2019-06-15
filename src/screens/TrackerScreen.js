@@ -10,6 +10,7 @@ import { renameTracker } from '../storage'
 const CLEAR = 'CLEAR'
 const WIN = 'WIN'
 const LOSS = 'LOSS'
+const VALID_STATUS = [CLEAR, WIN, LOSS]
 
 const WIN_COLOR = 'blue'
 const LOSS_COLOR = 'red'
@@ -111,24 +112,22 @@ export default class TrackerScreen extends React.Component {
     }
 
     async updateDay(day, status) {
-        if (status === WIN) {
-            return await this.addDay(day, WIN_COLOR)
+        if (VALID_STATUS.includes(status)) {
+            if (status === CLEAR) {
+                return await this.clearDay(day)
+            }
+
+            return await this.addDay(day, status)
         }
 
-        if (status === LOSS) {
-            return this.addDay(day, LOSS_COLOR)
-        }
-
-        await this.clearDay(day)
+        // TODO: log to sentry or something
+        console.warn(`Status ${status} is not a valid status.`)
     }
 
-    async addDay(day, selectedColor) {
+    async addDay(day, status) {
         const markedDates = {...this.state.markedDates}
 
-        markedDates[day] = {
-            selected: true,
-            selectedColor
-        }
+        markedDates[day] = status
 
         try {
             this.saveMarkedDates(markedDates)
@@ -185,6 +184,17 @@ export default class TrackerScreen extends React.Component {
         const today = new Date()
         const minDate = '1998-17-12'
 
+        // TODO: is it better to have the styles dates in the state ?
+        const styledMarkedDates = {}
+        for (let day in this.state.markedDates) {
+            const selectedColor = this.state.markedDates[day] === WIN ? WIN_COLOR : LOSS_COLOR
+
+            styledMarkedDates[day] = {
+                selected: true,
+                selectedColor,
+            }
+        }
+
         return (
             <View style={styles.container}>
 
@@ -200,7 +210,7 @@ export default class TrackerScreen extends React.Component {
                     minDate={minDate}
                     onDayPress={(day) => this.showDialog(day)}
                     hideExtraDays={false}
-                    markedDates={this.state.markedDates}
+                    markedDates={styledMarkedDates}
                 />
 
                 <Dialog
