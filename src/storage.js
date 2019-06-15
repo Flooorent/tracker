@@ -2,10 +2,14 @@ import {AsyncStorage} from 'react-native'
 
 const ALL_TRACKERS_KEY = 'allTrackers'
 
-async function removeTrackerFromAllTrackers(trackerName) {
+function findTrackerIndex(trackers, trackerId) {
+    return trackers.map(tracker => tracker.id).indexOf(trackerId)
+}
+
+async function removeTrackerFromAllTrackers(trackerId) {
     try {
         const allTrackers = await fetchAllTrackers()
-        const indexOfTrackerToDelete = allTrackers.map(tracker => tracker.title).indexOf(trackerName)
+        const indexOfTrackerToDelete = findTrackerIndex(allTrackers, trackerId)
 
         if(indexOfTrackerToDelete >= 0) {
             const newAllTrackers = [...allTrackers.slice(0, indexOfTrackerToDelete), ...allTrackers.slice(indexOfTrackerToDelete + 1)]
@@ -13,7 +17,7 @@ async function removeTrackerFromAllTrackers(trackerName) {
         }
     } catch(e) {
         // TODO: log to sentry or something
-        console.error(`Couldn't remove tracker ${trackerName} from all trackers:`, e)
+        console.error(`Couldn't remove tracker ${trackerId} from all trackers:`, e)
     }
 }
 
@@ -38,8 +42,24 @@ async function saveAllTrackers(allTrackers) {
     await AsyncStorage.setItem(ALL_TRACKERS_KEY, JSON.stringify(allTrackers))
 }
 
+async function renameTracker(trackerId, newTrackerName) {
+    const trackers = await fetchAllTrackers()
+    const trackerIndex = findTrackerIndex(trackers, trackerId)
+
+    if (trackerIndex >= 0) {
+        const tracker = trackers[trackerIndex]
+
+        if (tracker.title !== newTrackerName) {
+            tracker.title = newTrackerName
+            await saveAllTrackers(trackers)
+        }
+    }
+
+}
+
 export {
     fetchAllTrackers,
     removeTrackerFromAllTrackers,
+    renameTracker,
     saveAllTrackers,
 }

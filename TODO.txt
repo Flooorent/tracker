@@ -1,6 +1,3 @@
-- pouvoir renommer tracker
-    - depuis all trackers screen
-    - depuis tracker screen
 - add stats at higher levels, e.g. if daily tracker:
     - add success percentage for the week (from the day it started)
     - add success percentage for the month (from the day it started)
@@ -11,7 +8,7 @@
     - quand on slide, on a une barre de slider sur le côté dégueulasse, trop grande et pas assez proche du bord droit de l'écran
 - day:
     - avoir des carrés à la place des ronds
-
+- all trackers: quand on veut créer un nouveau tracker, qu'on rentre un nom puis qu'on click sur cancel, on voit que le nom est deleted avant que le dialog ne s'efface. Inverser l'ordre d'exécution.
 - parameter to fill automatically days with either win or loss, does nothing by default
 - pouvoir réordonner les trackers
 

@@ -34,7 +34,7 @@ export default class DeleteScreen extends React.Component {
 
     async deleteTracker() {
         this.removeTrackerData(this.state.trackerId)
-        removeTrackerFromAllTrackers(this.state.trackerName)
+        removeTrackerFromAllTrackers(this.state.trackerId)
         this.state.removeTrackerFromState()
         this.props.navigation.navigate('AllTrackers')
     }
