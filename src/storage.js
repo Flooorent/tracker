@@ -13,8 +13,10 @@ async function removeTrackerFromAllTrackers(trackerId) {
 
         if(indexOfTrackerToDelete >= 0) {
             const newAllTrackers = [...allTrackers.slice(0, indexOfTrackerToDelete), ...allTrackers.slice(indexOfTrackerToDelete + 1)]
-            await saveAllTrackers(newAllTrackers)
+            return await saveAllTrackers(newAllTrackers)
         }
+
+        console.warn(`Tracker ${trackerId} is not part of all trackers`)
     } catch(e) {
         // TODO: log to sentry or something
         console.error(`Couldn't remove tracker ${trackerId} from all trackers:`, e)

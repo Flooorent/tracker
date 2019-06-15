@@ -23,7 +23,7 @@ export default class TrackerScreen extends React.Component {
                     title='Delete'
                     onPress={() => navigation.navigate('Delete', {
                         trackerName: navigation.getParam('trackerName'),
-                        trackerid: navigation.getParam('trackerId'),
+                        trackerId: navigation.getParam('trackerId'),
                         removeTrackerFromState: navigation.getParam('removeTrackerFromState'),
                     })}
                 />
