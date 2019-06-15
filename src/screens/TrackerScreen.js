@@ -187,11 +187,18 @@ export default class TrackerScreen extends React.Component {
         // TODO: is it better to have the styles dates in the state ?
         const styledMarkedDates = {}
         for (let day in this.state.markedDates) {
-            const selectedColor = this.state.markedDates[day] === WIN ? WIN_COLOR : LOSS_COLOR
+            const backgroundColor = this.state.markedDates[day] === WIN ? WIN_COLOR : LOSS_COLOR
 
             styledMarkedDates[day] = {
-                selected: true,
-                selectedColor,
+                customStyles: {
+                    container: {
+                        backgroundColor,
+                        borderRadius: 0,
+                    },
+                    text: {
+                        color: 'white',
+                    },
+                }
             }
         }
 
@@ -210,6 +217,7 @@ export default class TrackerScreen extends React.Component {
                     minDate={minDate}
                     onDayPress={(day) => this.showDialog(day)}
                     hideExtraDays={false}
+                    markingType={'custom'}
                     markedDates={styledMarkedDates}
                 />
 
