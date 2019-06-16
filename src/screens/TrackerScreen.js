@@ -15,6 +15,13 @@ const VALID_STATUS = [CLEAR, WIN, LOSS]
 const WIN_COLOR = 'blue'
 const LOSS_COLOR = 'red'
 
+function getThisMonth() {
+    const localeDate = new Date()
+    const utcDate = new Date(localeDate.getTime() - localeDate.getTimezoneOffset() * 60000 )
+    const stringDate = utcDate.toISOString().split('T')[0]
+    return stringDate.split('-', 2).join('-')
+}
+
 export default class TrackerScreen extends React.Component {
     static navigationOptions = ({navigation}) => {
         return {
@@ -38,7 +45,9 @@ export default class TrackerScreen extends React.Component {
             markedDates: {},
             displayDialog: false,
             dialogTitle: '',
-            newName: ''
+            newName: '',
+            displayedMonth: getThisMonth(),
+            monthWinRate: 0,
         }
 
         this.updateDay = this.updateDay.bind(this)
@@ -58,10 +67,12 @@ export default class TrackerScreen extends React.Component {
 
         try {
             const markedDates = await this.fetchMarkedDates(trackerId)
+            const monthWinRate = this.getWinRate(markedDates, this.state.displayedMonth)
 
             this.setState({
                 ...tempState,
                 markedDates,
+                monthWinRate,
             })
         } catch(error) {
             // TODO: log to sentry or something
@@ -69,6 +80,35 @@ export default class TrackerScreen extends React.Component {
             console.log(`Error after mounting tracker ${trackerId}`, error)
             this.setState(tempState)
         }
+    }
+
+    /**
+     * Get displayed month's winrate.
+     * 
+     * @param {Object} markedDates all marked dates, of the form { day1: 'WIN', day2: 'LOSS' }
+     * @param {String} month current displayed month with format 'YYYY-mm'
+     */
+    getWinRate(markedDates, month) {
+        const winsAndLosses = {
+            [WIN]: 0,
+            [LOSS]: 0,
+        }
+
+        for (day in markedDates) {
+            if (day.startsWith(month)) {
+                winsAndLosses[markedDates[day]] += 1
+            }
+        }
+
+        if (winsAndLosses[WIN] === 0) {
+            return 0
+        }
+
+        if (winsAndLosses[LOSS] === 0) {
+            return 100
+        }
+
+        return Math.floor(winsAndLosses[WIN] / (winsAndLosses[WIN] + winsAndLosses[LOSS]) * 100)
     }
 
     async fetchMarkedDates(trackerId) {
@@ -138,7 +178,12 @@ export default class TrackerScreen extends React.Component {
             return
         }
 
-        this.setState({markedDates}, this.clearDialog)
+        const monthWinRate = this.getWinRate(markedDates, this.state.displayedMonth)
+
+        this.setState({
+            markedDates,
+            monthWinRate,
+        }, this.clearDialog)
     }
 
     async clearDay(day) {
@@ -148,7 +193,7 @@ export default class TrackerScreen extends React.Component {
             delete markedDates[day]
 
             try {
-                this.saveMarkedDates(markedDates)
+                await this.saveMarkedDates(markedDates)
             } catch (error) {
                 // TODO: log to sentry or something
                 // TODO: display something to user
@@ -156,7 +201,12 @@ export default class TrackerScreen extends React.Component {
                 return
             }
 
-            this.setState({markedDates}, this.clearDialog)
+            const monthWinRate = this.getWinRate(markedDates, this.state.displayedMonth)
+
+            this.setState({
+                markedDates,
+                monthWinRate,
+            }, this.clearDialog)
         }
 
         this.clearDialog()
@@ -178,6 +228,16 @@ export default class TrackerScreen extends React.Component {
             trackerName: cleanedNewName,
             newName: cleanedNewName,
         }, () => this.state.renameTrackerInParentState(cleanedNewName))
+    }
+
+    updateDisplayedMonth(day) {
+        const newMonth = `${day.year}-${day.month.toString().padStart(2, '0')}`
+        const monthWinRate = this.getWinRate(this.state.markedDates, newMonth)
+
+        this.setState({
+            displayedMonth: newMonth,
+            monthWinRate,
+        })
     }
 
     render() {
@@ -212,6 +272,8 @@ export default class TrackerScreen extends React.Component {
                     onEndEditing={() => this.updateTrackerName()}
                 />
 
+                <Text>{`${this.state.monthWinRate}% Win Rate`}</Text>
+
                 <Calendar
                     maxDate={today}
                     minDate={minDate}
@@ -219,6 +281,7 @@ export default class TrackerScreen extends React.Component {
                     hideExtraDays={false}
                     markingType={'custom'}
                     markedDates={styledMarkedDates}
+                    onMonthChange={(day) => this.updateDisplayedMonth(day) }
                 />
 
                 <Dialog

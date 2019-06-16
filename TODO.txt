@@ -1,8 +1,17 @@
-- add stats at higher levels, e.g. if daily tracker:
-    - add success percentage for the week (from the day it started)
-    - add success percentage for the month (from the day it started)
-    - add success percentage for the year (from the day it started)
-    - display those stats below calendar
+- sauvegarder monthly win rate dans le storage:
+    - sauvegarder via async storage le win rate de chaque mois pour lequel on a des win et loss
+    - avoir dans le state le mois courant et son win rate
+- avoir un icon de liste à la place de "< All Trackers" pour revenir vers tous les trackers
+- avoir un icon de poubelle à la place de "Delete"
+- enlever "Tracker"
+- mettre le tracker name tout en haut de l'écran
+- forcer le calendrier à prendre quasiment toute la place de l'écran
+- avoir un icone + dans la page All Trackers pour créer un nouveau tracker
+- ne pas pouvoir aller au mois suivant le mois en cours
+- le calendrier doit toujours prendre la même place, en tout cas en haut. Il ne doit pas bouger.
+- changer les win_color et loss_color
+- ajouter espace entre les jours
+- griser la flèche droite (pour changer de mois) lorsque c'est le mois en cours
 - quand la liste des trackers est longue
     - la ligne "Add new tracker" va vers le haut de l'écran, pareil pour tout ce qu'il y a au-dessus
     - quand on slide, on a une barre de slider sur le côté dégueulasse, trop grande et pas assez proche du bord droit de l'écran
@@ -12,3 +21,9 @@
 
 - add weekly tracker
 - add monthly tracker
+
+- add stats at higher levels, e.g. if daily tracker:
+    - add success percentage for the week (from the day it started)
+    - add success percentage for the month (from the day it started)
+    - add success percentage for the year (from the day it started)
+    - display those stats below calendar
