@@ -3,7 +3,6 @@
     - avoir dans le state le mois courant et son win rate
 - avoir un icon de liste à la place de "< All Trackers" pour revenir vers tous les trackers
 - avoir un icon de poubelle à la place de "Delete"
-- enlever "Tracker"
 - forcer le calendrier à prendre quasiment toute la place de l'écran
 - avoir un icone + dans la page All Trackers pour créer un nouveau tracker
 - ne pas pouvoir aller au mois suivant le mois en cours

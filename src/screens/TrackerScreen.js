@@ -25,7 +25,6 @@ function getThisMonth() {
 export default class TrackerScreen extends React.Component {
     static navigationOptions = ({navigation}) => {
         return {
-            title: 'Tracker',
             headerRight: (
                 <Button
                     title='Delete'
