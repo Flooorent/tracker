@@ -263,7 +263,7 @@ export default class TrackerScreen extends React.Component {
         }
 
         return (
-            <View style={styles.container}>
+            <View style={styles.trackerContainer}>
 
                 <TextInput
                     style={{ fontSize: 30 }}

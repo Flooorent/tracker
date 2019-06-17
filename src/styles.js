@@ -7,6 +7,12 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    trackerContainer: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+    },
     winLossDialog: {
         flex: 0.25,
         flexDirection: 'column',
